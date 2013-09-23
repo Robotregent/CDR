@@ -30,8 +30,7 @@ import org.junit.runner.RunWith;
 import poc.Endpoint;
 import poc.IEndpoint;
 import poc.producer.ClientExceptionMapper;
-import poc.producer.ProcessMgmServiceProducer;
-import example.service.DefaultExampleService;
+import poc.producer.ExampleServiceProducer;
 
 
 @RunWith(Arquillian.class)
@@ -44,8 +43,8 @@ public class Remote {
 	public static WebArchive createRemoteDeployment(){		
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "Server.war")				
-				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-api:1.0-SNAPSHOT").withTransitivity().asFile())
-				.addClasses(DefaultExampleService.class, Server_Activator.class, ServerPostProcessInterceptor.class, ServiceExceptionMapper.class)	
+				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-impl:1.0-SNAPSHOT").withTransitivity().asFile())
+				.addClasses(Server_Activator.class, ServerPostProcessInterceptor.class, ServiceExceptionMapper.class)	
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 		
@@ -57,10 +56,10 @@ public class Remote {
 		BeansDescriptor beansXml = Descriptors.create(BeansDescriptor.class);
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "Client.war")				
-				.addAsLibraries(Maven.resolver().resolve("remote:remote-api:1.0.0").withTransitivity().asFile())
-				.addClasses(ClientExceptionMapper.class, ProcessMgmServiceProducer.class,IEndpoint.class, Endpoint.class,  Client_Activator.class)	
+				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-api:1.0-SNAPSHOT").withTransitivity().asFile())
+				.addClasses(ClientExceptionMapper.class, ExampleServiceProducer.class,IEndpoint.class, Endpoint.class,  Client_Activator.class)	
 				.addAsWebInfResource(
-						new StringAsset(beansXml.alternativeClass(poc.producer.ProcessMgmServiceProducer.class).exportAsString()),
+						new StringAsset(beansXml.alternativeClass(ExampleServiceProducer.class).exportAsString()),
 	                    beansXml.getDescriptorName()
 	             )
 	             .addAsResource("META-INF/urls.properties");	

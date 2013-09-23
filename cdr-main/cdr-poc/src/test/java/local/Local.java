@@ -22,7 +22,7 @@ public class Local {
 	@Deployment
 	public static WebArchive createDeployment(){		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "local.war")				
-				.addAsLibraries(Maven.resolver().resolve("remote:remote-impl:1.0.0").withTransitivity().asFile())		
+				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-impl:1.0-SNAPSHOT").withTransitivity().asFile())		
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");	
 		return war;
 	}

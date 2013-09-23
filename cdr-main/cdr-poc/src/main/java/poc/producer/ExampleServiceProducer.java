@@ -10,7 +10,7 @@ import cdr.CDRFactory;
 import example.service.ExampleService;
 
 @Alternative
-public class ProcessMgmServiceProducer extends CDRFactory<ExampleService> {
+public class ExampleServiceProducer extends CDRFactory<ExampleService> {
 
 	@Override
 	@Produces
