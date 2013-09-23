@@ -1,0 +1,24 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+     
+    <!-- Force the use of the Servlet 3.0 protocol to initiate a CDI - Scope while performing a HTTP request -->
+	<defaultProtocol type="Servlet 3.0" />  
+	<group qualifier="CDR-Group">
+	    <!-- Example configuration for a remote JBoss AS 7 instance -->
+		<container qualifier="arquillian-jbossas-remote">
+		  <protocol type="Servlet 3.0">	<!-- <protocol type="Servlet 3.0"> <protocol type="jmx-as7"> -->
+		     <!-- <property name="executionType">REMOTE</property> -->
+		  </protocol>
+	 	  <configuration>
+	        <property name="username">jboss</property>
+	        <property name="password">poc-jboss</property>
+	      </configuration>
+		</container>
+		<container qualifier="arquillian-weld-ee-embedded">
+		</container>
+	</group>
+</arquillian>
+

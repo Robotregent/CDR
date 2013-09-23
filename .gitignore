@@ -1,3 +1,4 @@
+# Jboss
 jboss/server/all/deploy/project.ext
 jboss/server/default/deploy/project.ext
 jboss/server/minimal/deploy/project.ext
@@ -13,3 +14,19 @@ jboss/server/minimal/log/*.log
 jboss/server/minimal/tmp/**/*
 jboss/server/minimal/data/**/*
 jboss/server/minimal/work/**/*
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+target/
+
+# Eclipse project files
+.classpath
+.project
+
+# Maven
+.settings/
+

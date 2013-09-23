@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+    	<groupId>cdr</groupId>
+    	<artifactId>cdr-main</artifactId>
+    	<version>1.0-SNAPSHOT</version>
+  	</parent>
+    <artifactId>cdr-poc</artifactId>
+    <name>cdr-poc</name>
+    <packaging>war</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.jboss.maven.plugin>7.4.Final</version.jboss.maven.plugin>
+        <version.jboss.spec.javaee.6.0>3.0.2.Final</version.jboss.spec.javaee.6.0>
+        <version.war.plugin>2.1.1</version.war.plugin>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+    </properties>
+
+    <dependencies>
+
+    	<dependency>
+	      	<groupId>cdr</groupId>
+	      	<artifactId>example-service-api</artifactId>
+	      	<version>1.0-SNAPSHOT</version>
+	 	</dependency>
+	 	
+	 	<dependency>
+	      	<groupId>cdr</groupId>
+	      	<artifactId>example-service-impl</artifactId>
+	      	<version>1.0-SNAPSHOT</version>
+	 	</dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+    		<groupId>org.jboss.arquillian.junit</groupId>
+    		<artifactId>arquillian-junit-container</artifactId>
+    		<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>jaxrs-api</artifactId>
+        	<scope>provided</scope>
+        </dependency>
+		
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxrs</artifactId>
+        	<scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jackson-provider</artifactId>
+        	<scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+	        <groupId>junit</groupId>
+	        <artifactId>junit</artifactId>
+	        <scope>test</scope>
+      	</dependency>
+       
+	 	<dependency>
+		    <groupId>org.jboss.shrinkwrap.resolver</groupId>
+		    <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+		    <scope>test</scope>
+		</dependency>
+
+	 	<dependency>
+	 		<groupId>org.jboss.shrinkwrap.descriptors</groupId>
+	 		<artifactId>shrinkwrap-descriptors-impl</artifactId>
+	 	</dependency>
+
+	 	<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${version.war.plugin}</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>${version.jboss.maven.plugin}</version>
+            </plugin>
+			<plugin>
+         		<groupId>org.apache.maven.plugins</groupId>
+         		<artifactId>maven-surefire-plugin</artifactId>
+         		<version>2.11</version>
+      		</plugin>
+        </plugins>
+        <testResources>
+        	<testResource>
+            	<directory>${basedir}/src/test/resources/</directory>
+        	</testResource>
+    	</testResources>
+    </build>
+
+    <profiles>
+	    <profile>
+		    <id>arquillian-jbossas-remote</id>
+		    <activation>
+          		<activeByDefault>true</activeByDefault>
+    	  	</activation>
+		    <dependencies>
+		        <dependency>
+		            <groupId>org.jboss.spec</groupId>
+		            <artifactId>jboss-javaee-6.0</artifactId>
+		            <version>1.0.0.Final</version>
+		            <type>pom</type>
+		            <scope>provided</scope>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.jboss.as</groupId>
+		            <artifactId>jboss-as-arquillian-container-remote</artifactId>
+		            <version>7.1.1.Final</version>
+		            <scope>test</scope>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.jboss.arquillian.protocol</groupId>
+		            <artifactId>arquillian-protocol-servlet</artifactId>
+		            <scope>test</scope>
+		        </dependency>
+		    </dependencies>
+		</profile>
+    </profiles> 
+</project>
