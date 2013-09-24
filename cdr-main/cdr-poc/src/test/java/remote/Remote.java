@@ -31,6 +31,10 @@ import poc.Endpoint;
 import poc.IEndpoint;
 import poc.producer.ClientExceptionMapper;
 import poc.producer.ExampleServiceProducer;
+import remote.client.Client_Activator;
+import remote.server.ServerExceptionMapper;
+import remote.server.ServerPostProcessInterceptor;
+import remote.server.Server_Activator;
 
 
 @RunWith(Arquillian.class)
@@ -44,7 +48,7 @@ public class Remote {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "Server.war")				
 				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-impl:1.0-SNAPSHOT").withTransitivity().asFile())
-				.addClasses(Server_Activator.class, ServerPostProcessInterceptor.class, ServiceExceptionMapper.class)	
+				.addClasses(Server_Activator.class, ServerPostProcessInterceptor.class, ServerExceptionMapper.class)	
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 		

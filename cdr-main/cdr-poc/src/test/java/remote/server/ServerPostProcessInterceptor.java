@@ -1,4 +1,4 @@
-package remote;
+package remote.server;
 
 import java.lang.reflect.Method;
 

@@ -6,6 +6,7 @@ import javax.enterprise.inject.Produces;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
+
 import cdr.CDRFactory;
 import example.service.ExampleService;
 

@@ -1,4 +1,4 @@
-package remote;
+package remote.server;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,15 +6,17 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import poc.Endpoint;
+import example.service.DefaultExampleService;
 
 @ApplicationPath("/") 
-public class Client_Activator extends Application  {
+public class Server_Activator extends Application  {
 	@Override
     public Set<Class<?>> getClasses() {
         final Set<Class<?>> rootResources = new HashSet<Class<?>>();
         
-        rootResources.add(Endpoint.class);
+        rootResources.add(DefaultExampleService.class);
+        rootResources.add(ServerPostProcessInterceptor.class);
+        rootResources.add(ServerExceptionMapper.class);
         
         return rootResources;
     }
