@@ -11,7 +11,7 @@ public class ServerExceptionMapper implements ExceptionMapper<SomeApplicationExc
 
 	@Override
 	public Response toResponse(SomeApplicationException e) {
-		System.out.println("Server ExceptionMapper");
+		System.out.println("Server ExceptionMapper: Mapped SomeApplicationException to Statuscode 523");
 		return Response.status(523).build();
 	}
 

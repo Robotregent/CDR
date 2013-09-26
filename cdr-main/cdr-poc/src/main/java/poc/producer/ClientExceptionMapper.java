@@ -17,11 +17,11 @@ public class ClientExceptionMapper implements ClientErrorInterceptor{
 			BaseClientResponse r = (BaseClientResponse) response;
 			String message = "SomeApplikationException. Status Code: " + response.getStatus();
 			InputStream stream = r.getStreamFactory().getInputStream();
-			stream.reset();
-			System.out.println("ClientExceptionmapper");
-			if (response.getStatus() == 523)
+			stream.reset();			
+			if (response.getStatus() == 523){
+				System.out.println("ClientExceptionmapper: Mapped Stauscode 523 to SomeApplicationException");
 				throw new SomeApplicationException(message);
-			
+			}			
 		}
 		catch (IOException e){
 			e.printStackTrace();

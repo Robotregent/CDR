@@ -28,18 +28,16 @@ public class Endpoint implements IEndpoint{
 		return result;
 	}	
 	
-	public String put() {
+	public Integer put() {
 		
-		String result = null;
+		Integer result = null;
 			
 		try {
 			TodoItem t = new TodoItem();
-			
-			Integer newItemId = service.takeItem(t);
-			
-			result = Integer.toString( newItemId );
+			t.setDescription("Testitem");
+			result = service.takeItem(t);
 		} catch (SomeApplicationException e) {			
-			result = e.getMessage();
+			result = -1;
 		}			
 		
 		return result;

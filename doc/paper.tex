@@ -21,7 +21,7 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 \fancyhead[EL]{\textsc{Fabian Schneider}}				% Hier bitte den/die Autor(en) angeben
-\fancyhead[OR]{\textsc{CDR}}						% Hier bitte den Dokumententitel angeben
+\fancyhead[OR]{\textsc{CDR}}								% Hier bitte den Dokumententitel angeben
 \fancyfoot[EC,OC]{}
 
 \usepackage{listingsutf8, color}
@@ -67,28 +67,29 @@
   morestring=[b]"
 }
 \renewcommand*\lstlistingname{Beispielcode}
-\usepackage{hyperref}									% Links ins Internetz
+\usepackage{hyperref}												% Links ins Internetz
 \begin{document}
 
 % Titel
-\title{CDR}										% Hier bitte den Dokumententitel angeben
+\title{CDR}															% Hier bitte den Dokumententitel angeben
 \subtitle{Contexts and Dependency Remoting}							% Hier bitte den Untertitel angeben
-\author{Fabian Schneider}					    			% Hier bitte den/die Autor(en) angeben; mehrere bitte durch Komma trennen
+\author{Fabian Schneider}					    						% Hier bitte den/die Autor(en) angeben; mehrere bitte durch Komma trennen
 \institute{Universität Ulm, Institut für Datenbanken und Informationssysteme\\
-           \email{Fabian-2.Schneider@uni-ulm.de}}		% Hier bitte die EMail-Adresse(n) des/der Autors/Autoren angeben
+           \email{Fabian-2.Schneider@uni-ulm.de}}					% Hier bitte die EMail-Adresse(n) des/der Autors/Autoren angeben
            
 \maketitle
 
 \begin{acronym}
-% \acro{ISO}{International Organization for Standardization}
+	\acro{REST}{Representational State Transfer}
+	\acro{CDI}{Contexts and Dependency Injection}
+	\acro{CDR}{Contexts and Dependency Remoting}
 \end{acronym}
+
 % Zusammenfassung
 \begin{abstract}
- 
 \end{abstract}
 
 % ab hier beginnt der eigentlich Text
-
 \input{sEinleitung}
 
 \input{sCDI}

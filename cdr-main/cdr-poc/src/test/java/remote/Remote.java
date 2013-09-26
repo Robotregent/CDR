@@ -42,6 +42,7 @@ public class Remote {
 	
 	private static final String RESOURCE_PREFIX = Server_Activator.class.getAnnotation(ApplicationPath.class).value().substring(1);
 	private static IEndpoint client;
+	private static Integer id;
 	
 	@Deployment(order=1, name="Server", testable = false) @OverProtocol("Servlet 3.0")
 	public static WebArchive createRemoteDeployment(){		
@@ -80,16 +81,17 @@ public class Remote {
 		url = new URL(url, RESOURCE_PREFIX);
         client = ProxyFactory.create(IEndpoint.class,url.toString());
         		
-		String id = client.put();
+		id = client.put();
+		
 		Assert.assertNotNull(id);	
-		System.out.println("Create Item with id: " + id);
+		System.out.println("Create item with id: " + id);
 	}
 	
 	@Test @OperateOnDeployment("Client") @RunAsClient @InSequence(2)
 	public void get () throws Exception {	        
-        String r = client.get(1);
+        String r = client.get(id);
 		Assert.assertNotNull(r);
-		System.out.println("Get: " + r);
+		System.out.println("Get created item. Has description: " + r);
 	}
 	
 	@Test @OperateOnDeployment("Client") @RunAsClient @InSequence(3) 

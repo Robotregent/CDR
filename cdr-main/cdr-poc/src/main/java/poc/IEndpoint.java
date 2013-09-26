@@ -18,5 +18,5 @@ public interface IEndpoint {
 	@GET
 	@Path("create/")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String put();
+	public Integer put();
 }
