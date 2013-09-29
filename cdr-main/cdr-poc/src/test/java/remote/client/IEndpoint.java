@@ -1,4 +1,4 @@
-package poc;
+package remote.client;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

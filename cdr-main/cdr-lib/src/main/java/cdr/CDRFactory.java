@@ -2,29 +2,35 @@ package cdr;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.Properties;
 
 import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.client.ClientRequestFactory;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
-public abstract class CDRFactory <T extends CDR> {	
+/**
+ * 
+ * @author robotregent
+ *
+ * @param <T>
+ */
+public abstract class CDRFactory <T> {	
 
 	protected abstract T produces();
-	
-	@SuppressWarnings("unchecked")
-	protected T getService (){				
+
+	protected T getService (Class<T> clazz){				
 		
-		System.out.print("Factory for: ");		
-		ParameterizedType superclass = (ParameterizedType) getClass().getGenericSuperclass();		
-		Class<T> clazz = (Class<T>) superclass.getActualTypeArguments()[0];
-		System.out.println(clazz.getCanonicalName());
+		System.out.print("Factory for: " + clazz.getCanonicalName());		
 				
 		URI uri = getUri(clazz.getCanonicalName());	
 		ClientRequestFactory crf = new ClientRequestFactory(UriBuilder.fromUri(uri).build());	
-		registerInterceptor(crf);					
+		
+		registerInterceptor(crf);	
+		
+		ResteasyProviderFactory pf = ResteasyProviderFactory.getInstance();
+		registerClientExceptionMapper(pf);		
 
 		return crf.createProxy(clazz);
 	}
@@ -32,7 +38,6 @@ public abstract class CDRFactory <T extends CDR> {
 	protected URI getUri(String callingInterface){
 		URI result=null;
 		String key = callingInterface+".url";
-		System.out.println("Looking for: "+key);
 		
 		// Is URL in system properties defined?
 		result = getUriFromSystem(key);				
@@ -43,8 +48,7 @@ public abstract class CDRFactory <T extends CDR> {
 		if (result != null)
 			System.out.println("Looking for Service at: "+result);
 		else
-			System.out.println("No url found");
-		
+			System.out.println("No url found");		
 		
 		return result;
 	}
@@ -75,8 +79,7 @@ public abstract class CDRFactory <T extends CDR> {
 		return result;
 	}
 	protected void registerInterceptor(ClientRequestFactory crf){
-//		crf.getSuffixInterceptors().getExecutionInterceptorList().add(clientInterceptor);
-//		ResteasyProviderFactory pf = ResteasyProviderFactory.getInstance();
-//		pf.addClientErrorInterceptor(clientExeptionMapper);
+	}
+	protected void registerClientExceptionMapper(ResteasyProviderFactory pf){
 	}
 }

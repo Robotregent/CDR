@@ -1,4 +1,4 @@
-package poc.producer;
+package remote.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,14 @@ import org.jboss.resteasy.client.core.ClientErrorInterceptor;
 
 import example.SomeApplicationException;
 
+/**
+ * A CDR-Hook to map HTTP status codes to Java-Exceptions. 
+ * RSTEasy will raise a ClientResponseFailure if this class doesn't throw a RuntimeException.  
+ * Unfortunately this doesn't work for 
+ * 
+ * @author robotregent
+ *
+ */
 public class ClientExceptionMapper implements ClientErrorInterceptor{
 
 	@SuppressWarnings("rawtypes")
@@ -26,10 +34,6 @@ public class ClientExceptionMapper implements ClientErrorInterceptor{
 		catch (IOException e){
 			e.printStackTrace();
 		}
-		// Wenn keine neue Exception geworfen wird, macht resteasy normal weiter und erzeugt ClientResponseFailure
-		// https://docs.jboss.org/resteasy/docs/2.3.6.Final/userguide/html_single/#Client_error_handling
-		// in neueren Versionen von RESTeasy gibts nen richtigen ClientExceptionMapper, der in der Semantik zu der Serverseite passt
-		// https://docs.jboss.org/resteasy/docs/3.0-beta-3/javadocs/org/jboss/resteasy/client/exception/mapper/ClientExceptionMapper.html
 	}
 
 }

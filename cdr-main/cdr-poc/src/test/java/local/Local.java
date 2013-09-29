@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 
 import example.SomeApplicationException;
 import example.TodoItem;
-import example.service.ExampleService;
+import example.service.Service;
 
 @RunWith(Arquillian.class)
 public class Local {
@@ -30,10 +30,10 @@ public class Local {
 		return war;
 	}
 	
-	@Inject ExampleService service;
+	@Inject Service service;
 	
 	@Test @InSequence(1)
-	public void create (ExampleService service) throws Exception{
+	public void create (Service service) throws Exception{
 		TodoItem t = new TodoItem();
 		t.setDescription("Testitem");
 		id = service.takeItem(t);

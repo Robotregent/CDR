@@ -8,15 +8,15 @@ import javax.enterprise.context.ApplicationScoped;
 
 import example.SomeApplicationException;
 import example.TodoItem;
-import example.service.ExampleService;
+import example.service.Service;
 
 @ApplicationScoped
-public class DefaultExampleService implements ExampleService {
+public class ServiceImplementation implements Service {
 	
 	private Map<Integer, TodoItem> todoDB = new ConcurrentHashMap<Integer, TodoItem>();
 	private AtomicInteger idCounter = new AtomicInteger();
 	
-	public DefaultExampleService() {
+	public ServiceImplementation() {
 		TodoItem first = new TodoItem();
 		first.setDescription("First FuckUp Item");
 		first.setPrio(1);

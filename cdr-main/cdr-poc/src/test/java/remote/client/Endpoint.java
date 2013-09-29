@@ -1,15 +1,15 @@
-package poc;
+package remote.client;
 
 import javax.inject.Inject;
 
 import example.SomeApplicationException;
 import example.TodoItem;
-import example.service.ExampleService;
+import example.service.Service;
 
 public class Endpoint implements IEndpoint{
 	
 	@Inject
-    private ExampleService service;
+    private Service service;
 	
 	public Endpoint(){
 		

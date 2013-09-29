@@ -3,8 +3,6 @@ package remote;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.ws.rs.ApplicationPath;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.OverProtocol;
@@ -27,11 +25,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import poc.Endpoint;
-import poc.IEndpoint;
-import poc.producer.ClientExceptionMapper;
-import poc.producer.ExampleServiceProducer;
+import remote.ServiceProducer;
+import remote.client.ClientExceptionMapper;
 import remote.client.Client_Activator;
+import remote.client.Endpoint;
+import remote.client.IEndpoint;
 import remote.server.ServerExceptionMapper;
 import remote.server.ServerPostProcessInterceptor;
 import remote.server.Server_Activator;
@@ -40,7 +38,6 @@ import remote.server.Server_Activator;
 @RunWith(Arquillian.class)
 public class Remote {
 	
-	private static final String RESOURCE_PREFIX = Server_Activator.class.getAnnotation(ApplicationPath.class).value().substring(1);
 	private static IEndpoint client;
 	private static Integer id;
 	
@@ -50,24 +47,20 @@ public class Remote {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "Server.war")				
 				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-impl:1.0-SNAPSHOT").withTransitivity().asFile())
 				.addClasses(Server_Activator.class, ServerPostProcessInterceptor.class, ServerExceptionMapper.class)	
-				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 		
 		return war;
 	}
 	
 	@Deployment(order=2 , name="Client", testable = true)
 	public static WebArchive createLocalDeployment(){		
-		BeansDescriptor beansXml = Descriptors.create(BeansDescriptor.class);
-		
+	
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "Client.war")				
 				.addAsLibraries(Maven.resolver().resolve("cdr:example-service-api:1.0-SNAPSHOT").withTransitivity().asFile())
-				.addClasses(ClientExceptionMapper.class, ExampleServiceProducer.class,IEndpoint.class, Endpoint.class,  Client_Activator.class)	
-				.addAsWebInfResource(
-						new StringAsset(beansXml.alternativeClass(ExampleServiceProducer.class).exportAsString()),
-	                    beansXml.getDescriptorName()
-	             )
-	             .addAsResource("META-INF/urls.properties");	
+				.addAsLibraries(Maven.resolver().resolve("cdr:cdr-lib:1.0-SNAPSHOT").withTransitivity().asFile())
+				.addClasses(ClientExceptionMapper.class, ServiceProducer.class,IEndpoint.class, Endpoint.class,  Client_Activator.class)	
+				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+	            .addAsResource("META-INF/urls.properties");	
 		return war;
 	}
 	
@@ -78,7 +71,7 @@ public class Remote {
 
 	@Test @OperateOnDeployment("Client") @RunAsClient @InSequence(1)
 	public void create (@ArquillianResource URL url) throws Exception{
-		url = new URL(url, RESOURCE_PREFIX);
+
         client = ProxyFactory.create(IEndpoint.class,url.toString());
         		
 		id = client.put();
@@ -94,10 +87,11 @@ public class Remote {
 		System.out.println("Get created item. Has description: " + r);
 	}
 	
-	@Test @OperateOnDeployment("Client") @RunAsClient @InSequence(3) 
+	@Test @OperateOnDeployment("Client") @RunAsClient @InSequence(3)
 	public void exception () throws Exception{
 		String r = client.get(42);
 		Assert.assertNotNull(r);
 		System.out.println("Catched Exception: " + r);
 	}
+	
 }

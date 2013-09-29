@@ -8,12 +8,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import cdr.CDR;
 import example.SomeApplicationException;
 import example.TodoItem;
 
 @Path("/")
-public interface ExampleService extends CDR {
+public interface Service {
 	
 	@GET
 	@Path("/item")
