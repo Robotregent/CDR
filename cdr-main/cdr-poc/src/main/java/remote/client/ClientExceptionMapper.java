@@ -20,7 +20,7 @@ import example.SomeApplicationException;
 public class ClientExceptionMapper implements ClientErrorInterceptor{
 
 	@SuppressWarnings("rawtypes")
-	public void handle(ClientResponse response) throws RuntimeException {
+	public void handle(ClientResponse response) throws RuntimeException{
 		try {
 			BaseClientResponse r = (BaseClientResponse) response;
 			String message = "SomeApplikationException. Status Code: " + response.getStatus();
@@ -33,7 +33,7 @@ public class ClientExceptionMapper implements ClientErrorInterceptor{
 		}
 		catch (IOException e){
 			e.printStackTrace();
-		}
+		} 
 	}
 
 }

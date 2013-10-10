@@ -1,0 +1,61 @@
+\section{Umsetzung\label{sec:implementation}}
+\begin{table}
+\caption{\label{tab:project}Projektaufbau der Implementierung}
+\begin{tabular}{lp{2cm}p{8cm}}
+cdr-main &             & \\
+|\_      & cdr-lib     & \ac{CDR}"=Komponenten.\\
+|\_      & service-api & \textit{Service}"=Schnittstelle.\\
+|\_      & service-lib & Implementierung der \textit{Service}"=Schnittstelle.\\
+|\_      & cdr-poc     & Testfälle zur Veranschaulichung des \ac{CDR}"=Entwurfsmusters.\\
+\end{tabular}
+\end{table}
+Eine Beispielimplementierung des \ac{CDR}"=Entwurfsmusters als Mavenprojekt und diese Dokumentation ist unter \href{https://github.com/Robotregent/cdr}{github.com/Robotregent/cdr} zu finden. 
+Tabelle \ref{tab:project} zeigt den Projektaufbau und den Zweck der einzelnen Module.
+Die Funktionsweise der Beispielimplementierung wird an Hand zweier Testfälle aufgezeigt. Der erste Testfall zeigt wie eine lokale Bereitstellung für die Beispielkomponenten aufgebaut ist, der zweite Testfall zeigt die entfernte Bereitstellung nach dem \ac{CDR}"=Entwurfsmusters.
+Um die Testfälle ausführen zu können, muss ein JBoss Anwendungsserver in der Version 7.1.1\footnote{\href{http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip}{{http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip}}} verfügbar sein.  
+Der Befehl \colorbox{mygray}{\lstinline!mvn install!}, ausgeführt im Ordner \textit{cdr-main}, installiert alle restlichen Abhängigkeiten, übersetzt das Projekt und führt die Testfälle aus.\\
+Im Folgenden werden die notwendigen Anpassungen für eine Umsetzung des \ac{CDR}"=Entwurfsmusters aufgezeigt.
+\paragraph{Aktivierung}
+Um eine Schnittstelle für das \ac{CDR}"=Entwurfsmuster zu aktivieren, muss diese mit \ac{JAX-RS} Annotationen erweitert werden. 
+Beispielcode \ref{lst:activation} zeigt einen Ausschnitt der \textit{Service}"=Komponente.
+\begin{lstlisting}[caption={Aktivierung},captionpos=b,label=lst:activation] 
+@Path("/")
+public interface Service {	
+	@GET
+	@Path("/item")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TodoItem[] getItems();	
+
+	@POST
+	@Path("/item")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Integer takeItem(TodoItem tdi);	
+}
+\end{lstlisting}
+Die Methoden der Komponente werden mit Hilfe der Annotationen \colorbox{mygray}{\lstinline!@GET!} und \colorbox{mygray}{\lstinline!@POST!} den entsprechenden \ac{HTTP}"=Methoden zugeordnet. \colorbox{mygray}{\lstinline!@Path!} bestimmt unter welcher \ac{URI} die annotierten Elemente zu erreichen sind. Weiterführende Informationen über die Gestaltung von \ac{REST}"=Schnittstellen und die Implementierung dieser mit \ac{JAX-RS} liefern \cite{Tilkov2011} und \cite{Burke2010}. \\
+Die Annotationen \colorbox{mygray}{\lstinline!@Consumes!} und \colorbox{mygray}{\lstinline!@Produces!} steuern die Serialisierung der Parameter und werden im entsprechenden Abschnitt noch näher behandelt.
+\newpage
+\paragraph{Stellvertreterobjekt}
+\begin{lstlisting}[caption={Factory},captionpos=b,label=lst:Factory] 
+public abstract class CDRFactory <T> {	
+
+	protected abstract T produces();
+
+	protected T getService (Class<T> clazz){							
+				
+		URI uri = getUri(clazz.getCanonicalName());			
+		ClientRequestFactory crf = new ClientRequestFactory(UriBuilder.fromUri(uri).build());	
+		
+		registerInterceptor(crf);	
+		
+		ResteasyProviderFactory pf = ResteasyProviderFactory.getInstance();
+		
+		registerClientExceptionMapper(pf);		
+
+		return crf.createProxy(clazz);
+	}
+}
+\end{lstlisting}
+\paragraph{Methodensignaturen}
+\paragraph{Exceptions}
+\paragraph{Serialisierung}

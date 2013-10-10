@@ -1,5 +1,11 @@
-\section{Einleitung}
-\begin{figure}
-\includegraphics[width=\textwidth]{img/CDR}
-\caption{CDR}
-\end{figure}
+\section{Einleitung\label{sec:introduction}}
+In verteilten Softwarearchitekturen ist es wichtig, dass die einzelnen Komponenten flexibel auf verschiedenen Server bereitgestellt werden können. 
+Je nach Anwendungsfall müssen beispielsweise alle Komponenten auf einem Server oder eine einzelne Komponente auf einem speziellen Server bereitgestellt werden. 
+Die Nutzung einer Komponenten innerhalb der Geschäftslogik der Anwendung soll dabei frei von den Details der Verteilung sein.\\
+In einer Objektorientierten Sprache wie Java sind folgende drei Ziele zu erreichen:
+\begin{description}
+\item[Methodensignaturen] Die Parameter und der Rückgabewert der Methoden sollen keine Details über die Art der Bereitstellung aufweisen.
+\item[Serialisierung] Für eine flexibel Verteilung der Komponenten müssen die Objekte die als Parameter und Rückgabewert genutzt werden, serialisierbar sein. Die Details der Serialisierung sollen nicht Teil der Geschäftslogik sein. 
+\item[Exceptions] Auch die Behandlung von Ausnahmefehlern muss frei von Bereitstellungsdetails bleiben. Zudem muss sichergestellt werden, dass auch bei verteilten Bereitstellungsvarianten die speziellen Fehlerklassen der Anwendung erhalten bleiben.    
+\end{description}
+Das im Folgenden vorgestellte Konzept \ac{CDR}, versucht diese Anforderungen für die \ac{Java EE}"=Plattform umzusetzen.
