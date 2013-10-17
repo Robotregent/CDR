@@ -36,13 +36,13 @@
 
     	<dependency>
 	      	<groupId>cdr</groupId>
-	      	<artifactId>example-service-api</artifactId>
+	      	<artifactId>service-api</artifactId>
 	      	<version>1.0-SNAPSHOT</version>
 	 	</dependency>
 	 	
 	 	<dependency>
 	      	<groupId>cdr</groupId>
-	      	<artifactId>example-service-impl</artifactId>
+	      	<artifactId>service-impl</artifactId>
 	      	<version>1.0-SNAPSHOT</version>
 	 	</dependency>
 
@@ -128,8 +128,8 @@
          				</goals>
          				<configuration>
          					<includes>
-         						<include>*/Local.java</include>
-         						<include>*/Remote.java</include>
+         						<include>*/LocalDeployment_IT.java</include>
+         						<include>*/RemoteDeployment_IT.java</include>
          					</includes>
          				</configuration>
          			</execution>

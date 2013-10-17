@@ -6,7 +6,7 @@ cdr-main &             & \\
 |\_      & cdr-lib     & \ac{CDR}"=Komponenten.\\
 |\_      & service-api & \textit{Service}"=Schnittstelle.\\
 |\_      & service-lib & Implementierung der \textit{Service}"=Schnittstelle.\\
-|\_      & cdr-poc     & Testfälle zur Veranschaulichung des \ac{CDR}"=Entwurfsmusters.\\
+|\_      & cdr-poc     & Beinhaltet die Testfälle zur Veranschaulichung des \ac{CDR}"=Entwurfsmusters und die für \textit{Service} spezifische \textit{CDR hooks}.\\
 \end{tabular}
 \end{table}
 Eine Beispielimplementierung des \ac{CDR}"=Entwurfsmusters als Mavenprojekt und diese Dokumentation ist unter \href{https://github.com/Robotregent/cdr}{github.com/Robotregent/cdr} zu finden. 
@@ -17,7 +17,7 @@ Der Befehl \colorbox{mygray}{\lstinline!mvn install!}, ausgeführt im Ordner \te
 Im Folgenden werden die notwendigen Anpassungen für eine Umsetzung des \ac{CDR}"=Entwurfsmusters aufgezeigt.
 \paragraph{Aktivierung}
 Um eine Schnittstelle für das \ac{CDR}"=Entwurfsmuster zu aktivieren, muss diese mit \ac{JAX-RS} Annotationen erweitert werden. 
-Beispielcode \ref{lst:activation} zeigt einen Ausschnitt der \textit{Service}"=Komponente.
+Beispielcode \ref{lst:activation} zeigt dies für die \textit{Service}"=Komponente.
 \begin{lstlisting}[caption={Aktivierung},captionpos=b,label=lst:activation] 
 @Path("/")
 public interface Service {	
@@ -36,7 +36,11 @@ Die Methoden der Komponente werden mit Hilfe der Annotationen \colorbox{mygray}{
 Die Annotationen \colorbox{mygray}{\lstinline!@Consumes!} und \colorbox{mygray}{\lstinline!@Produces!} steuern die Serialisierung der Parameter und werden im entsprechenden Abschnitt noch näher behandelt.
 \newpage
 \paragraph{Stellvertreterobjekt}
-\begin{lstlisting}[caption={Factory},captionpos=b,label=lst:Factory] 
+Der Beispielcode \ref{lst:factory} zeigt mit einem Ausschnitt der abstrakte Klasse \colorbox{mygray}{\lstinline!CDRFactory <T>!} die zentrale Komponente im \ac{CDR}"=Entwurfsmuster.
+Die Methode \colorbox{mygray}{\lstinline!T produces()!} muss für jede Ausprägung der abstrakten Klasse implementiert werden und agiert als \textit{Producer}"=Methode des \ac{CDI}"=Mechanismus. Bei der Implementierung genügt es, die Methode \colorbox{mygray}{\lstinline!T getService (Class<T> clazz)!} aufzurufen, um das Stellvertreterobjekt zu erzeugen. In der Beispielimplementierung wird die \ac{URI} der entfernten Komponente über eine \textit{Properties}"=Datei aufgelöst. Hier sind aber auch andere Mechanismen wie z.B. Annotationen denkbar.
+Die \ac{CDI}"=Spezifikation legt fest, dass eine \textit{Producer}"=Methode keine Typvariable als Rückgabewert haben darf. Daher ist diese Indirektion notwendig. Siehe dazu auch \cite{group2009jsr299}.\\ 
+Die Methoden \colorbox{mygray}{\lstinline!registerClientInterceptor()!} und \colorbox{mygray}{\lstinline!registerClientExceptionMapper()!} sind die \textit{CDR hooks} Für den Client. 
+\begin{lstlisting}[caption={Abstrakte CDR"=Fabrik},captionpos=b,label=lst:factory] 
 public abstract class CDRFactory <T> {	
 
 	protected abstract T produces();
@@ -46,7 +50,7 @@ public abstract class CDRFactory <T> {
 		URI uri = getUri(clazz.getCanonicalName());			
 		ClientRequestFactory crf = new ClientRequestFactory(UriBuilder.fromUri(uri).build());	
 		
-		registerInterceptor(crf);	
+		registerClientInterceptor(crf);	
 		
 		ResteasyProviderFactory pf = ResteasyProviderFactory.getInstance();
 		
@@ -54,8 +58,61 @@ public abstract class CDRFactory <T> {
 
 		return crf.createProxy(clazz);
 	}
+	
+	protected void registerClientInterceptor(ClientRequestFactory crf){
+	}
+	
+	protected void registerClientExceptionMapper(ResteasyProviderFactory pf){
+	}
 }
 \end{lstlisting}
+\newpage
 \paragraph{Methodensignaturen}
+\ac{JAX-RS} ermöglicht es durch die Konfigurierbarkeit mit Annotationen, die Geschäftslogik frei von den Details der \ac{HTTP}"=Kommunikation zu halten.
+Allerdings muss hier eine Abwägung zwischen Transparenz der Methodensignaturen und Aussagekraft der \ac{REST}"=Schnittstelle getroffen werden.
+Das \ac{CDR}"=Entwurfsmuster nutzt die Möglichkeiten von \ac{JAX-RS} und \textit{resteasy} die \ac{HTTP}"=Anfragen und "=Antworten unabhängig von der Geschäftslogik manipulieren zu können, um beide Ziele zu erreichen.\\
+Das Manipulieren der \ac{HTTP}"=Anfrage ist über die in Beispielcode \ref{lst:factory} gezeigte Methode \colorbox{mygray}{\lstinline!registerClientInterceptor()!} möglich. Hier kann ein \textit{resteasy ClientExecutionInterceptor} registriert werden. Siehe dazu auch \cite{resteasy}.\\
+Beispielcode \ref{lst:serverinterceptor} zeigt, wie die \ac{HTTP}"=Antwort durch einen \textit{CDR hook} auf der Serverseite manipuliert wird. Um die Aussagekraft der \ac{REST}"=Schnittstelle zu vergrößern, wird nach dem Erzeugen einer Ressource der entsprechende \ac{HTTP}"=Statuscode und \textit{Location"=Header} gesetzt. 
+\begin{lstlisting}[caption={ServerPostProcessInterceptor},captionpos=b,label=lst:serverinterceptor] 
+@Provider
+@ServerInterceptor
+public class ServerPostProcessInterceptor implements PostProcessInterceptor, AcceptedByMethod {	
+	
+	@Context
+	HttpServletRequest request;
+	
+	public void postProcess(ServerResponse response) {
+		Integer id = (Integer) response.getEntity();
+		response.setStatus(201);
+		MultivaluedMap<String, Object> headers = response.getMetadata();
+		 
+		String url = request.getRequestURL().toString();
+		
+		headers.add("Location", url );
+	}
+}
+\end{lstlisting}
+
 \paragraph{Exceptions}
+Damit die Fehlerbehandlung transparent zur Bereitstellung bleibt, müssen die entsprechenden \textit{CDR hooks} implementiert werden. Ohne diese zusätzlichen Komponenten erzeugt die \ac{JAX-RS}"=Laufzeitumgebung nur eine generische Fehlernachricht. 
+Der \ac{HTTP}"=Statuscode wäre 500 und auf der Seite des Clients, würde der \textit{resteasy}"=Fehlertyp \textit{ClientResponseFailure} erzeugt werden. 
+Dadurch würde die Semantik der Fehlerbehandlung in der Anwendung verloren gehen und die Geschäftslogik wäre nicht mehr frei von den Details der Bereitstellung. Diese Problematik kann durch die folgenden \textit{CDR hooks} umgangen werden:
+\begin{description}
+\item [ServerExceptionMapper] Wird von der \ac{JAX-RS}"=Laufzeitumgebung aufgerufen, wenn der entsprechende Fehler auftritt. Der Fehlertyp kann durch einen individuellen Statuscode in der \ac{HTTP}"=Antwort repräsentiert werden.
+\item [ClientExceptionMapper] In der \ac{JVM} des Clients kann der Statuscode ausgelesen und der entsprechende Fehlertyp erzeugt werden. Allerdings ist dies nur für Fehlertypen möglich, die den Typ \textit{RuntimeExpetion} erweitern. Beispielcode \ref{lst:ClientExceptionMapper} zeigt einen Ausschnitt aus der Beispielimplementierung.
+\end{description}
+\begin{lstlisting}[caption={ClientExceptionMapper},captionpos=b,label=lst:ClientExceptionMapper] 
+public class ClientExceptionMapper implements ClientErrorInterceptor{
+
+	public void handle(ClientResponse response) throws RuntimeException{
+			
+		if (response.getStatus() == 523){
+			throw new SomeApplicationException();
+		}
+	}
+}
+\end{lstlisting}
 \paragraph{Serialisierung}
+Die Annotationen \colorbox{mygray}{\lstinline!@Consumes!} und \colorbox{mygray}{\lstinline!@Produces!} steuern die Serialisierung der Parameter und Rückgabewerte durch die \ac{JAX-RS}"=Laufzeitumgebung. 
+Werden für diese Annotationen die Werte \textit{application/xml} oder \textit{application/json} gesetzt, kann die \ac{JAX-RS}"=Laufzeitumgebung alle Klassen serialisieren, die entsprechend dem \ac{JAXB}"=Standard annotiert sind.  
+\newpage

@@ -36,7 +36,7 @@ import remote.server.Server_Activator;
 
 
 @RunWith(Arquillian.class)
-public class Remote {
+public class RemoteDeployment_IT {
 	
 	private static IEndpoint client;
 	private static Integer id;

@@ -4,7 +4,7 @@
 \usepackage{palatino}
 \usepackage[T1]{fontenc}
 \usepackage[utf8x]{inputenc}
-\usepackage{graphicx, wrapfig} 							% Grafikpaket und Grafik im Textfluß
+\usepackage{graphicx, wrapfig, amssymb} 							% Grafikpaket und Grafik im Textfluß
 \usepackage{bibgerm}
 \usepackage[footnote, nolist]{acronym}                   % Abkürzungen
 \usepackage{tabularx,longtable, multirow} 				% Tabellen
@@ -65,6 +65,7 @@
 	\acro{Java EE}{Java Platform, Enterprise Edition}
 	\acro{HTTP}{Hypertext Transfer Protocol}
 	\acro{URI}{Uniform resource identifier}
+	\acro{JAXB}{Java Architecture for XML Binding}
 \end{acronym}
 
 % Zusammenfassung
@@ -83,11 +84,11 @@ Der \ac{CDI}"=Mechanismus stellt zur Laufzeit abhängig von der Bereitstellungsv
 \input{sUmsetzung}
 
 \input{sFazit}
-
+\vspace{-20pt}
 % Literaturangaben
 \bibliography{../literatur/Literatur}
 %\bibliographystyle{unsrt}
-\bibliographystyle{apalike}
+\bibliographystyle{alpha}
 
 
 \end{document}

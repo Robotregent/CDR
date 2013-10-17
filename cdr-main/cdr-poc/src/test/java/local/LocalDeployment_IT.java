@@ -18,7 +18,7 @@ import example.TodoItem;
 import example.service.Service;
 
 @RunWith(Arquillian.class)
-public class Local {
+public class LocalDeployment_IT {
 	
 	private static Integer id;
 	

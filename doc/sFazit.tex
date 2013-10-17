@@ -1,1 +1,24 @@
 \section{Fazit und Ausblick}
+\begin{table}[t]
+\setlength{\tabcolsep}{10pt}
+\centering
+\caption{\label{tab:zielerreichung}Zielerreichung durch die Beispielimplementierung.}
+\begin{tabular}{lc}
+Methodensignaturen & \checkmark \\
+Serialisierung     & \checkmark \\
+Exceptions         & \checkmark / 0\\
+\end{tabular}
+\vspace{-10pt}
+\end{table}
+Das grundsätzliche Ziel des \ac{CDR}"=Entwurfsmusters ist es, die Geschäftslogik von den Details der Bereitstellung zu trennen.
+Tabelle \ref{tab:zielerreichung} gibt einen Überblick darüber, für welche der in Kapitel \ref{sec:introduction} definierten Bereiche dieses Ziel erreicht werden konnten.
+Die Bereiche \textbf{Methodensignaturen} und \textbf{Serialisierung} sind in der Beispielimplementierung frei von Bereitstellungsdetails. 
+Das gesetzte Ziel konnte hier erreicht werden.\\
+Einschränkungen gibt es bei der Fehlerbehandlung. Fehlertypen können zwar auch bei entfernter Bereitstellung erhalten bleiben aber Kapitel \ref{sec:implementation} zeigt, dass für eine erfolgreiche Abbildung der Fehlertypen auf \ac{HTTP}"=Statuscodes und wieder zurück, die Fehlertypen den Typ \textit{RuntimeException} spezialisieren müssen.
+Da \textit{RuntimeExceptions} in Java eine besondere Semantik haben, schränkt dies die Fehlerbehandlung der Anwendung ein und ist zu vermeiden. 
+Den Ursprung hat diese Einschränkung in der genutzten \textit{resteasy}"=Version. Andere \ac{JAX-RS}"=Implementierungen haben diese Einschränkung nicht. Siehe dazu auch \cite{cxf}.\\
+Die Beispielimplementierung legt zum Zeitpunkt der Bereitstellung der Anwendung fest, ob eine von CDR aktivierte Komponente lokal oder entfernt referenziert wird. 
+Mit wenigen Modifikationen könnte diese Entscheidung auch dynamisch zur Laufzeit getroffen werden.
+Erforderlich wäre die Implementierung von Marker"=Schnittstellen und die Annotation von \textit{Qualifier}, um dem \ac{CDI}"=Mechanismus die Auflösung der Abhängigkeiten zu ermöglichen. 
+Dies vermischt allerdings Geschäftslogik mit Bereitstellungsdetails und führt zu einer engen Kopplung dieser Komponenten.
+Mit \ac{CDI} 1.1 könnte durch das Überschreiben eines \textit{InjectionPoints} diese Einschränkung aufgehoben werden \cite{weld}.

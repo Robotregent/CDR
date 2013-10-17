@@ -11,8 +11,8 @@ import example.SomeApplicationException;
 
 /**
  * A CDR-Hook to map HTTP status codes to Java-Exceptions. 
- * RSTEasy will raise a ClientResponseFailure if this class doesn't throw a RuntimeException.  
- * Unfortunately this doesn't work for 
+ * RSTEasy will raise a ClientResponseFailure if this class doesn't throw an Exception.   
+ * Unfortunately this only works with RuntimeExceptions.
  * 
  * @author robotregent
  *
@@ -35,5 +35,4 @@ public class ClientExceptionMapper implements ClientErrorInterceptor{
 			e.printStackTrace();
 		} 
 	}
-
 }
