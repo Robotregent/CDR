@@ -14,7 +14,7 @@ Das grundsätzliche Ziel des \ac{CDR}"=Entwurfsmusters ist es, die Geschäftslog
 Tabelle \ref{tab:zielerreichung} gibt einen Überblick darüber, für welche der in Kapitel \ref{sec:introduction} definierten Bereiche dieses Ziel erreicht werden konnten.
 Die Bereiche \textbf{Methodensignaturen} und \textbf{Serialisierung} sind in der Beispielimplementierung frei von Bereitstellungsdetails. 
 Das gesetzte Ziel konnte hier erreicht werden.\\
-Einschränkungen gibt es bei der Fehlerbehandlung. Fehlertypen können zwar auch bei entfernter Bereitstellung erhalten bleiben aber Kapitel \ref{sec:implementation} zeigt, dass für eine erfolgreiche Abbildung der Fehlertypen auf \ac{HTTP}"=Statuscodes und wieder zurück, die Fehlertypen den Typ \textit{RuntimeException} spezialisieren müssen.
+Einschränkungen gibt es bei der Fehlerbehandlung. Fehlertypen können zwar auch bei entfernter Bereitstellung erhalten bleiben, aber Kapitel \ref{sec:implementation} zeigt, dass für eine erfolgreiche Abbildung der Fehlertypen auf \ac{HTTP}"=Statuscodes und wieder zurück, die Fehlertypen den Typ \textit{RuntimeException} spezialisieren müssen.
 Da \textit{RuntimeExceptions} in Java eine besondere Semantik haben, schränkt dies die Fehlerbehandlung der Anwendung ein und ist zu vermeiden. 
 Den Ursprung hat diese Einschränkung in der genutzten \textit{resteasy}"=Version. Andere \ac{JAX-RS}"=Implementierungen haben diese Einschränkung nicht. Siehe dazu auch \cite{cxf}.\\
 Die Beispielimplementierung legt zum Zeitpunkt der Bereitstellung der Anwendung fest, ob eine von CDR aktivierte Komponente lokal oder entfernt referenziert wird. 
